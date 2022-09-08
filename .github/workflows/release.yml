@@ -46,13 +46,22 @@ jobs:
           channel-id: "C029CJZ9NAZ"
           payload: |
             {
-              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "text": "Release please",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action build result"
+                    "type": "plain_text",
+                    "text": "Preparing release v3.0.1",
+                  },
+                  "accessory": {
+                    "type": "button",
+                    "url": "https://google.com",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View PR",
+                      "emoji": true
+                    }
                   }
                 }
               ]
