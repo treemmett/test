@@ -46,13 +46,23 @@ jobs:
           channel-id: "C029CJZ9NAZ"
           payload: |
             {
-              "text": "Release please",
+              "icon_emoji": ":rocket:",
+              "username": "Consumer UI",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "Preparing release v3.0.1",
+                    "text": "Preparing release ${{ steps.version.outputs.version }}"
+                  },
+                  "accessory": {
+                    "type": "button",
+                    "url": "${{ steps.pr.outputs.url }}",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View PR",
+                      "emoji": true
+                    }
                   }
                 }
               ]
