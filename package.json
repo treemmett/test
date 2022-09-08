@@ -1,5 +1,6 @@
 {
   "version": "0.0.0",
+  "license": "UNLICENSED",
   "dependencies": {
     "conventional-changelog-cli": "^2.2.2",
     "conventional-recommended-bump": "^6.1.0",

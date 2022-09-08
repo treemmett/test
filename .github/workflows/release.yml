@@ -15,17 +15,17 @@ jobs:
       - run: yarn --frozen-lockfile
       - name: Determine version type
         id: type
-        run: echo "::set-output name=type::$(yarn conventional-recommended-bump -p angular)"
+        run: echo "::set-output name=type::$(yarn --silent conventional-recommended-bump -p angular)"
       - name: Set version
         id: version
         run: echo "::set-output name=version::$(npm version --no-git-tag-version ${{ steps.type.outputs.type }})"
       - name: Generate changelog
         # cspell:word versionrc
         run: |
-          yarn conventional-changelog -n .versionrc.json -i CHANGELOG.md -s
-          yarn conventional-changelog -n .versionrc.json -o RELEASE_NOTES.md
+          yarn --silent conventional-changelog -n .versionrc.json -i CHANGELOG.md -s
+          yarn --silent conventional-changelog -n .versionrc.json -o RELEASE_NOTES.md
       - name: Format changelog
-        run: yarn prettier -w CHANGELOG.md RELEASE_NOTES.md
+        run: yarn --silent prettier -w CHANGELOG.md RELEASE_NOTES.md
       - name: Commit and tag
         run: |
           git checkout -b "release/${{ steps.version.outputs.version }}"
