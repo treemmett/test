@@ -1,0 +1,49 @@
+{
+  "options": {
+    "preset": {
+      "name": "conventionalcommits",
+      "types": [
+        {
+          "type": "feat",
+          "section": "New Features"
+        },
+        {
+          "type": "fix",
+          "section": "Bug Fixes"
+        },
+        {
+          "type": "perf",
+          "section": "Performance Improvement"
+        },
+        {
+          "type": "refactor",
+          "section": "Code Refactor"
+        },
+        {
+          "type": "test",
+          "section": "Testing"
+        },
+        {
+          "type": "docs",
+          "section": "Documentation"
+        },
+        {
+          "type": "build",
+          "section": "Build Process"
+        },
+        {
+          "type": "style",
+          "section": "Code Style"
+        },
+        {
+          "type": "revert",
+          "hidden": true
+        },
+        {
+          "type": "chore",
+          "section": "Miscellaneous Chores"
+        }
+      ]
+    }
+  }
+}
