@@ -11,6 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: |
           date > generated.txt
+          git checkout -b release
           git config user.name robot
           git config user.email robot@github.com
           git add .
