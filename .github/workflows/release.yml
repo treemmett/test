@@ -53,15 +53,6 @@ jobs:
                   "text": {
                     "type": "plain_text",
                     "text": "Preparing release v3.0.1",
-                  },
-                  "accessory": {
-                    "type": "button",
-                    "url": "https://google.com",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "View PR",
-                      "emoji": true
-                    }
                   }
                 }
               ]
