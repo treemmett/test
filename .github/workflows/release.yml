@@ -26,7 +26,7 @@ jobs:
         id: version
         run: echo "::set-output name=version::$(npm version --no-git-tag-version ${{ steps.type.outputs.type }})"
       - name: Generate changelog
-        # cspell:word versionrc
+        # cspell:word versionrc slackapi
         run: |
           yarn --silent conventional-changelog -n .versionrc.json -i CHANGELOG.md -s
           yarn --silent conventional-changelog -n .versionrc.json -o RELEASE_NOTES.md
@@ -83,4 +83,46 @@ jobs:
               ]
             }
       - name: Upload changelog
-        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
+        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
+      - name: Respond to command
+        if: ${{ github.event.client_payload.response_url }}
+        id: slack-response
+        uses: slackapi/slack-github-action@v1.21.0
+        env:
+          SLACK_WEBHOOK_URL: ${{ github.event.client_payload.response_url }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        with:
+          payload: |
+            {
+              "icon_emoji": ":rocket:",
+              "username": "Consumer UI",
+              "blocks": [
+              		{
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Preparing release ${{ steps.version.outputs.version }}",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Changelog in :thread:",
+                    "emoji": true
+                  },
+                  "accessory": {
+                    "type": "button",
+                    "url": "${{ steps.pr.outputs.url }}",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View PR",
+                      "emoji": true
+                    }
+                  }
+                }
+              ]
+            }
+      - if: ${{ github.event.client_payload.response_url }}
+        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack-response.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
