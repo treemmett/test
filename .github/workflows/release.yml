@@ -16,7 +16,7 @@ jobs:
           git config user.email robot@github.com
           git add .
           git commit -m "generated"
-          git push
+          git push -u origin HEAD
       - run: gh pr create -t help -b "wow what does this do"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
