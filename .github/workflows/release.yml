@@ -22,6 +22,8 @@ jobs:
       - name: Generate changelog
         # cspell:word versionrc
         run: |
+          ls -la
+          pwd
           yarn conventional-changelog -n .versionrc.json -i CHANGELOG.md -s
           yarn conventional-changelog -n .versionrc.json -o RELEASE_NOTES.md
       - name: Format changelog
