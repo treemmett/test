@@ -28,7 +28,7 @@ jobs:
         run: yarn prettier -w CHANGELOG.md RELEASE_NOTES.md
       - name: Commit and tag
         run: |
-          git checkout -b release/${{ steps.version.outputs.version }}
+          git checkout -b "release/${{ steps.version.outputs.version }}"
           git config --global user.name 'Showcase IDX Bot'
           git config --global user.email 'robot@showcaseidx.com'
           git add package.json CHANGELOG.md
