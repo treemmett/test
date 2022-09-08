@@ -48,7 +48,6 @@ jobs:
             {
               "icon_emoji": ":rocket:",
               "username": "Consumer UI",
-              "channel": "C029CJZ9NAZ",
               "blocks": [
                 {
                   "type": "section",
