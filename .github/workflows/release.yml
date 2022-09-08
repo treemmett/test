@@ -86,4 +86,4 @@ jobs:
         run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
       - name: Respond to command
         if: ${{ github.event.client_payload.response_url }}
-        run: 'curl -H `Content-Type: application/json` -D `{ "response_type": "in_channel", "text": "${{ steps.pr.outputs.url }}" }` ${{ github.event.client_payload.response_url }}'
+        run: 'curl -H "Content-Type: application/json" -D "{ \"response_type\": \"in_channel\", \"text\": \"${{ steps.pr.outputs.url }}\" }" ${{ github.event.client_payload.response_url }}'
