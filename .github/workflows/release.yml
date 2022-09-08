@@ -46,23 +46,13 @@ jobs:
           channel-id: "C029CJZ9NAZ"
           payload: |
             {
-              "icon_emoji": ":rocket:",
-              "username": "Consumer UI",
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
-                    "type": "plain_text",
-                    "text": "Preparing release ${{ steps.version.outputs.version }}",
-                  },
-                  "accessory": {
-                    "type": "button",
-                    "url": "${{ steps.pr.outputs.url }}",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "View PR",
-                      "emoji": true
-                    }
+                    "type": "mrkdwn",
+                    "text": "GitHub Action build result"
                   }
                 }
               ]
