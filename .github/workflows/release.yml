@@ -1,0 +1,19 @@
+name: Draft release
+
+on:
+  repository_dispatch:
+    types: [draft-release]
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          date > generated.txt
+          git config user.name robot
+          git config user.email robot@github.com
+          git add .
+          git commit -m "generated"
+          git push
+      - run: gh pr create -t help
