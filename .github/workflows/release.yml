@@ -16,6 +16,6 @@ jobs:
           git add .
           git commit -m "generated"
           git push
-      - run: gh pr create -t help
+      - run: gh pr create -t help -b "wow what does this do"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
