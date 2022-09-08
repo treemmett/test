@@ -8,7 +8,12 @@ jobs:
   draft:
     runs-on: ubuntu-latest
     steps:
-      - run: gpg --version
+      - name: Decrypt secrets
+        run: |
+          yarn env test
+          cat .env | grep -v \# | xargs -I %s echo %s >> $GITHUB_ENV
+        env:
+          ENV_PASSPHRASE: ${{ secrets.ENV_PASSPHRASE }}
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -77,7 +82,5 @@ jobs:
                 }
               ]
             }
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
       - name: Upload changelog
-        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer ${{ secrets.SLACK_TOKEN }}" https://slack.com/api/files.upload'
+        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'

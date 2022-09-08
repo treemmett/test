@@ -1,6 +1,9 @@
 {
   "version": "0.0.0",
   "license": "UNLICENSED",
+  "scripts": {
+    "env": "scripts/encrypt_env.sh"
+  },
   "devDependencies": {
     "conventional-changelog-cli": "^2.2.2",
     "conventional-recommended-bump": "^6.1.0",
