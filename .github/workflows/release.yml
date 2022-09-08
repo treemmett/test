@@ -8,16 +8,16 @@ jobs:
   draft:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Decrypt secrets
         run: |
           yarn env test
           cat .env | grep -v \# | xargs -I %s echo %s >> $GITHUB_ENV
         env:
           ENV_PASSPHRASE: ${{ secrets.ENV_PASSPHRASE }}
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - run: yarn --frozen-lockfile
       - name: Determine version type
         id: type
