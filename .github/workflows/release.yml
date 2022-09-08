@@ -49,11 +49,20 @@ jobs:
               "icon_emoji": ":rocket:",
               "username": "Consumer UI",
               "blocks": [
+              		{
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Preparing release ${{ steps.version.outputs.version }}",
+                    "emoji": true
+                  }
+                },
                 {
                   "type": "section",
                   "text": {
                     "type": "plain_text",
-                    "text": "Preparing release ${{ steps.version.outputs.version }}"
+                    "text": "Changelog in :thread:",
+                    "emoji": true
                   },
                   "accessory": {
                     "type": "button",
@@ -69,3 +78,5 @@ jobs:
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      - name: Upload changelog
+        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer ${{ secrets.SLACK_TOKEN }}" https://slack.com/api/files.upload'
