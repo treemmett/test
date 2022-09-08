@@ -83,15 +83,13 @@ jobs:
               ]
             }
       - name: Upload changelog
-        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
+        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
       - name: Respond to command
-        if: ${{ github.event.client_payload.response_url }}
-        id: slack-response
+        if: ${{ github.event.client_payload.channel_id }}
+        id: reply
         uses: slackapi/slack-github-action@v1.21.0
-        env:
-          SLACK_WEBHOOK_URL: ${{ github.event.client_payload.response_url }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
         with:
+          channel-id: ${{ github.event.client_payload.channel_id }}
           payload: |
             {
               "icon_emoji": ":rocket:",
@@ -124,5 +122,5 @@ jobs:
                 }
               ]
             }
-      - if: ${{ github.event.client_payload.response_url }}
-        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack-response.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
+      - if: ${{ github.event.client_payload.channel_id }}
+        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.reply.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=${{ github.event.client_payload.channel_id }} -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
