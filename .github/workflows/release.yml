@@ -9,14 +9,64 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          date > generated.txt
-          git checkout -b release
-          git config user.name robot
-          git config user.email robot@github.com
-          git add .
-          git commit -m "generated"
-          git push -u origin HEAD
-      - run: gh pr create -t help -b "wow what does this do"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn --frozen-lockfile
+      - name: Determine version type
+        id: type
+        run: echo "::set-output name=type::$(conventional-recommended-bump -p angular)"
+      - name: Set version
+        id: version
+        run: echo "::set-output name=version::$(npm version --no-git-tag-version ${{ steps.type.outputs.type }})"
+      - name: Generate changelog
+        # cspell:word versionrc
+        run: |
+          conventional-changelog -n .versionrc.json -i CHANGELOG.md -s
+          conventional-changelog -n .versionrc.json -o RELEASE_NOTES.md
+      - name: Format changelog
+        run: prettier -w CHANGELOG.md RELEASE_NOTES.md
+      - name: Commit and tag
+        run: |
+          git checkout -b release/${{ steps.version.outputs.version }}
+          git config --global user.name 'Showcase IDX Bot'
+          git config --global user.email 'robot@showcaseidx.com'
+          git add package.json CHANGELOG.md
+          git commit -m "chore(release): ${{ steps.version.outputs.version }}"
+          git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
+          git push --follow-tags -u origin HEAD
+      - run: echo "::set-output name=url::$(gh pr create -t help -F RELEASE_NOTES.md)"
+        id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.21.0
+        with:
+          channel-id: "C029CJZ9NAZ"
+          payload: |
+            {
+              "icon_emoji": ":rocket:",
+              "username": "Consumer UI",
+              "channel": "C029CJZ9NAZ",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Preparing release ${{ steps.version.outputs.version }}",
+                  },
+                  "accessory": {
+                    "type": "button",
+                    "url": "${{ steps.pr.outputs.url }}",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View PR",
+                      "emoji": true
+                    }
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
