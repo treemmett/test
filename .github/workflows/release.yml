@@ -25,7 +25,7 @@ jobs:
           yarn conventional-changelog -n .versionrc.json -i CHANGELOG.md -s
           yarn conventional-changelog -n .versionrc.json -o RELEASE_NOTES.md
       - name: Format changelog
-        run: prettier -w CHANGELOG.md RELEASE_NOTES.md
+        run: yarn prettier -w CHANGELOG.md RELEASE_NOTES.md
       - name: Commit and tag
         run: |
           git checkout -b release/${{ steps.version.outputs.version }}
