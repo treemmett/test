@@ -41,7 +41,7 @@ jobs:
           git commit -m "chore(release): ${{ steps.version.outputs.version }}"
           git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
           git push --follow-tags -u origin HEAD
-      - run: echo "::set-output name=url::$(gh pr create -t "Release ${{ steps.version.outputs.version }}" -F RELEASE_NOTES.md)"
+      - run: echo "::set-output name=url::$(gh pr create -B prod -t "Release ${{ steps.version.outputs.version }}" -F RELEASE_NOTES.md)"
         id: pr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
