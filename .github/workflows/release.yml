@@ -1,6 +1,7 @@
 name: Draft release
 
 on:
+  push:
   repository_dispatch:
     types: [draft-release]
 
@@ -34,58 +35,11 @@ jobs:
         run: yarn --silent prettier -w CHANGELOG.md RELEASE_NOTES.md
       - name: Commit and tag
         run: |
-          git checkout -b "release/${{ steps.version.outputs.version }}"
           git config --global user.name 'Showcase IDX Bot'
           git config --global user.email 'robot@showcaseidx.com'
           git add package.json CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.version }}"
           git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
           git push --follow-tags -u origin HEAD
-      - run: echo "::set-output name=url::$(gh pr create -B prod -t "Release ${{ steps.version.outputs.version }}" -F RELEASE_NOTES.md)"
-        id: pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Post to a Slack channel
-        id: slack
-        uses: slackapi/slack-github-action@v1.21.0
-        with:
-          channel-id: "C029CJZ9NAZ"
-          payload: |
-            {
-              "icon_emoji": ":rocket:",
-              "username": "Consumer UI",
-              "blocks": [
-              		{
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Preparing release ${{ steps.version.outputs.version }}",
-                    "emoji": true
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Changelog in :thread:",
-                    "emoji": true
-                  },
-                  "accessory": {
-                    "type": "button",
-                    "url": "${{ steps.pr.outputs.url }}",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "View PR",
-                      "emoji": true
-                    }
-                  }
-                }
-              ]
-            }
-      - name: Upload changelog
-        run: 'curl -F file=@RELEASE_NOTES.md -F "thread_ts=${{ steps.slack.outputs.ts }}" -F "filename=CHANGELOG-${{ steps.version.outputs.version }}.md" -F channels=C029CJZ9NAZ -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/files.upload'
-      - name: Respond to command
-        if: ${{ github.event.client_payload.response_url }}
-        run: >-
-          curl -X POST -H 'Content-type: application/json'
-          --data '{ "response_type": "in_channel", "text": "${{ steps.pr.outputs.url }}" }' ${{ github.event.client_payload.response_url }}
+      - name: Release
+        run: gh release create ${{ steps.version.outputs.version }} -F RELEASE_NOTES.md
