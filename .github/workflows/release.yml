@@ -43,3 +43,5 @@ jobs:
           git push --follow-tags -u origin HEAD
       - name: Release
         run: gh release create ${{ steps.version.outputs.version }} -F RELEASE_NOTES.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
