@@ -37,6 +37,8 @@ jobs:
         run: yarn --silent prettier -w CHANGELOG.md RELEASE_NOTES.md
       - name: Commit and tag
         run: |
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
           git add package.json CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.version }}"
           git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
