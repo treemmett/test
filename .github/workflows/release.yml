@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -35,8 +37,6 @@ jobs:
         run: yarn --silent prettier -w CHANGELOG.md RELEASE_NOTES.md
       - name: Commit and tag
         run: |
-          git config --global user.name 'Showcase IDX Bot'
-          git config --global user.email 'robot@showcaseidx.com'
           git add package.json CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.version }}"
           git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
