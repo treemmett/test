@@ -1,3 +1,5 @@
+### [1.0.4](https://github.com/treemmett/test/compare/v1.0.3...v1.0.4) (2022-09-11)
+
 ### [1.0.3](https://github.com/treemmett/test/compare/v1.0.2...v1.0.3) (2022-09-10)
 
 ### 1.0.2 (2022-09-10)
